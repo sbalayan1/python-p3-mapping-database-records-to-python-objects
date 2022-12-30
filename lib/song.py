@@ -1,12 +1,11 @@
+#this lab covers a small problem. Python and our database do not speak the same language. So how can we get these two to communicate? When we query the database, we need to translate the raw data from our database into Python objects!
+
 import sqlite3
 
-CONN = sqlite3.connect('lib/music.db')
+CONN = sqlite3.connect()
 CURSOR = CONN.cursor()
 
 class Song:
-
-    all = []
-
     def __init__(self, name, album):
         self.id = None
         self.name = name
@@ -14,38 +13,24 @@ class Song:
 
     @classmethod
     def create_table(cls):
-        sql = """
-            CREATE TABLE IF NOT EXISTS songs (
-                id INTEGER PRIMARY KEY,
-                name TEXT,
-                album TEXT
-            )
-        """
-
-        CURSOR.execute(sql)
+        pass
 
     @classmethod
     def drop_table(cls):
-        sql = """
-            DROP TABLE IF EXISTS songs
-        """
-
-        CURSOR.execute(sql)
-
-    def save(self):
-        sql = """
-            INSERT INTO songs (name, album)
-            VALUES (?, ?)
-        """
-
-        CURSOR.execute(sql, (self.name, self.album))
-
-        self.id = CURSOR.execute("SELECT last_insert_rowid() FROM songs").fetchone()[0]
+        pass
 
     @classmethod
     def create(cls, name, album):
-        song = Song(name, album)
-        song.save()
-        return song
+        pass
 
-    # new code goes here!
+
+    #this class method converts what the database gives us into a python object. 
+    @classmethod
+    def new_from_db(cls, row):
+        pass
+        #it's important to note that sqlite3 will give us back an array of data for each row [1, Billie Jean, Thriller]
+
+        #we don't need to use the create() method here because we are not saving to the database. we are just creating a new instance. 
+        
+        song = cls(row[1], row[2]) #row[1] refers to the name and row[2] to the album. 
+        song.id = row[0] #after we create the new class, we save the id held in row[0] to the song's id attribute.
